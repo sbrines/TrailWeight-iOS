@@ -78,7 +78,11 @@ struct ResupplyPointAddItemView: View {
                     let item = ResupplyPointItem(quantity: 1)
                     item.gearItem = gear
                     context.insert(item)
-                    point.items?.append(item) ?? (point.items = [item])
+                    if point.items != nil {
+                        point.items?.append(item)
+                    } else {
+                        point.items = [item]
+                    }
                     dismiss()
                 } label: {
                     HStack {
