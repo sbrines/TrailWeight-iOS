@@ -7,6 +7,7 @@ struct TripDetailView: View {
     @Environment(\.modelContext) private var context
     @Environment(AppSettings.self) private var appSettings
     @State private var showingRecommendations = false
+    @State private var showingAddResupply = false
 
     private let recommendationEngine = GearRecommendationEngine()
 
@@ -42,10 +43,16 @@ struct TripDetailView: View {
                                 .font(.caption).foregroundStyle(.secondary)
                         }
                     }
+                    .swipeActions(edge: .trailing) {
+                        Button(role: .destructive) {
+                            context.delete(point)
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
                 }
-                Button("Add Resupply Point") {
-                    viewModel.addResupplyPoint(to: trip, locationName: "New Point",
-                                               mileMarker: 0, context: context)
+                Button("Add Resupply Point", systemImage: "plus") {
+                    showingAddResupply = true
                 }
             }
 
@@ -58,6 +65,46 @@ struct TripDetailView: View {
         .navigationTitle(trip.name)
         .sheet(isPresented: $showingRecommendations) {
             RecommendationsView(trip: trip)
+        }
+        .sheet(isPresented: $showingAddResupply) {
+            AddResupplyPointView(trip: trip, viewModel: viewModel)
+        }
+    }
+}
+
+struct AddResupplyPointView: View {
+    let trip: Trip
+    let viewModel: TripViewModel
+    @Environment(\.modelContext) private var context
+    @Environment(\.dismiss) private var dismiss
+    @State private var locationName = ""
+    @State private var mileMarker = ""
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("Location Details") {
+                    TextField("Location name", text: $locationName)
+                    TextField("Mile marker", text: $mileMarker)
+                        .keyboardType(.decimalPad)
+                }
+            }
+            .navigationTitle("Add Resupply Point")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Add") {
+                        let miles = Double(mileMarker) ?? 0
+                        viewModel.addResupplyPoint(to: trip, locationName: locationName,
+                                                   mileMarker: miles, context: context)
+                        dismiss()
+                    }
+                    .disabled(locationName.trimmingCharacters(in: .whitespaces).isEmpty)
+                }
+            }
         }
     }
 }

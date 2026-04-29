@@ -61,19 +61,6 @@ struct WeightDashboardView: View {
                         }
                     }
                 }
-
-                Section("Display Unit") {
-                    Picker("Unit", selection: Binding(
-                        get: { appSettings.weightUnit },
-                        set: { appSettings.weightUnit = $0 }
-                    )) {
-                        ForEach(WeightUnit.allCases) { u in
-                            Text(u.rawValue).tag(u)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                }
-                .onChange(of: trip) { _, _ in viewModel.recalculate() }
             }
 
             Section {
@@ -83,6 +70,7 @@ struct WeightDashboardView: View {
             }
         }
         .navigationTitle("Weight")
+        .onChange(of: viewModel.selectedTrip) { _, _ in viewModel.recalculate() }
     }
 }
 

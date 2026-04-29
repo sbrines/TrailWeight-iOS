@@ -5,6 +5,7 @@ struct AddGearItemView: View {
     @Environment(GearViewModel.self) private var viewModel
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
+    @Environment(AppSettings.self) private var appSettings
 
     var existingItem: GearItem? = nil
 
@@ -16,13 +17,14 @@ struct AddGearItemView: View {
     @State private var isConsumable = false
     @State private var notes = ""
     @State private var urlString = ""
+    @State private var imageURL = ""
 
     var isEditing: Bool { existingItem != nil }
 
     var body: some View {
         NavigationStack {
             Form {
-                Section("URL Import") {
+                Section("URLs") {
                     HStack {
                         TextField("Paste product URL", text: $urlString)
                             .keyboardType(.URL)
@@ -53,6 +55,10 @@ struct AddGearItemView: View {
                     if let error = viewModel.urlFetchError {
                         Text(error).font(.caption).foregroundStyle(.red)
                     }
+                    TextField("Image URL", text: $imageURL)
+                        .keyboardType(.URL)
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
                 }
 
                 Section("Item Details") {
@@ -70,7 +76,7 @@ struct AddGearItemView: View {
                     HStack {
                         TextField("Weight", text: $weightGrams)
                             .keyboardType(.decimalPad)
-                        Text("grams").foregroundStyle(.secondary)
+                        Text(appSettings.unitLabel).foregroundStyle(.secondary)
                     }
                     Stepper("Quantity: \(quantityOwned)", value: $quantityOwned, in: 1...99)
                 }
@@ -114,6 +120,7 @@ struct AddGearItemView: View {
         isConsumable = item.isConsumable
         notes = item.notes
         urlString = item.purchaseURL
+        imageURL = item.imageURL
     }
 
     private func save() {
@@ -127,11 +134,13 @@ struct AddGearItemView: View {
             item.isConsumable = isConsumable
             item.notes = notes
             item.purchaseURL = urlString
+            item.imageURL = imageURL
             item.updatedAt = Date()
         } else {
             let item = GearItem(name: name, brand: brand, category: category,
                                 weightGrams: grams, quantityOwned: quantityOwned,
-                                isConsumable: isConsumable, notes: notes, purchaseURL: urlString)
+                                isConsumable: isConsumable, notes: notes, purchaseURL: urlString,
+                                imageURL: imageURL)
             context.insert(item)
         }
         try? context.save()

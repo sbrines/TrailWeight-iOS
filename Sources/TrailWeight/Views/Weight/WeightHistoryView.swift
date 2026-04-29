@@ -93,28 +93,3 @@ struct WeightHistoryView: View {
         }
     }
 }
-
-// Called from PackListView toolbar to snapshot current weight
-struct SaveWeightSnapshotButton: View {
-    let packList: PackList
-    let tripName: String
-    @Environment(\.modelContext) private var context
-    @State private var saved = false
-
-    var body: some View {
-        Button(saved ? "Saved!" : "Save Weight", systemImage: saved ? "checkmark" : "chart.line.uptrend.xyaxis") {
-            let summary = WeightCalculator.calculate(from: packList.items ?? [])
-            let snap = WeightSnapshot(
-                tripName: tripName,
-                baseWeightGrams: summary.baseWeightGrams,
-                totalWeightGrams: summary.totalWeightGrams,
-                itemCount: (packList.items ?? []).count
-            )
-            context.insert(snap)
-            try? context.save()
-            saved = true
-            Task { try? await Task.sleep(for: .seconds(2)); saved = false }
-        }
-        .foregroundStyle(saved ? .green : .primary)
-    }
-}

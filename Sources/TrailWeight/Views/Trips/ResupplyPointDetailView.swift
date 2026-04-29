@@ -1,15 +1,18 @@
 import SwiftUI
+import SwiftData
 
 struct ResupplyPointDetailView: View {
     @Bindable var point: ResupplyPoint
     @Environment(\.modelContext) private var context
     @Environment(AppSettings.self) private var appSettings
+    @State private var showingAddItem = false
+    @Query(sort: \GearItem.name) private var allGear: [GearItem]
 
     var body: some View {
         List {
             Section("Location") {
                 TextField("Location name", text: $point.locationName)
-                LabeledContent("Mile Marker", value: String(format: "%.1f", point.mileMarker))
+                TextField("Mile Marker", value: $point.mileMarker, format: .number)
             }
             Section("Status") {
                 Toggle("Sent", isOn: $point.isSent)
@@ -30,14 +33,73 @@ struct ResupplyPointDetailView: View {
                             .font(.caption.monospacedDigit())
                             .foregroundStyle(.secondary)
                     }
+                    .swipeActions(edge: .trailing) {
+                        Button(role: .destructive) {
+                            context.delete(item)
+                        } label: {
+                            Label("Remove", systemImage: "trash")
+                        }
+                    }
+                }
+                Button("Add Item", systemImage: "plus") {
+                    showingAddItem = true
                 }
             }
-            if !point.notes.isEmpty || true {
-                Section("Notes") {
-                    TextEditor(text: $point.notes).frame(minHeight: 60)
-                }
+            Section("Notes") {
+                TextEditor(text: $point.notes).frame(minHeight: 60)
             }
         }
         .navigationTitle(point.locationName)
+        .sheet(isPresented: $showingAddItem) {
+            ResupplyPointAddItemView(point: point, allGear: allGear)
+        }
+    }
+}
+
+struct ResupplyPointAddItemView: View {
+    let point: ResupplyPoint
+    let allGear: [GearItem]
+    @Environment(\.modelContext) private var context
+    @Environment(\.dismiss) private var dismiss
+    @Environment(AppSettings.self) private var appSettings
+
+    var packedGear: Set<UUID> {
+        Set((point.items ?? []).compactMap { $0.gearItem?.id })
+    }
+
+    var availableGear: [GearItem] {
+        allGear.filter { !packedGear.contains($0.id) }
+    }
+
+    var body: some View {
+        NavigationStack {
+            List(availableGear) { gear in
+                Button {
+                    let item = ResupplyPointItem(quantity: 1)
+                    item.gearItem = gear
+                    context.insert(item)
+                    point.items?.append(item) ?? (point.items = [item])
+                    dismiss()
+                } label: {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(gear.name)
+                            Text(appSettings.format(gear.weightGrams))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                    }
+                }
+                .buttonStyle(.plain)
+            }
+            .navigationTitle("Add Item")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+            }
+        }
     }
 }
