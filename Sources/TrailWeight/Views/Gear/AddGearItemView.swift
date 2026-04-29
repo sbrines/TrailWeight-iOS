@@ -12,7 +12,7 @@ struct AddGearItemView: View {
     @State private var name = ""
     @State private var brand = ""
     @State private var category: GearCategory = .other
-    @State private var weightGrams = ""
+    @State private var weightInput = ""
     @State private var quantityOwned = 1
     @State private var isConsumable = false
     @State private var notes = ""
@@ -20,6 +20,34 @@ struct AddGearItemView: View {
     @State private var imageURL = ""
 
     var isEditing: Bool { existingItem != nil }
+
+    private func displayToGrams(_ value: Double) -> Double {
+        switch appSettings.weightUnit {
+        case .grams:     return value
+        case .ounces:    return value * 28.3495
+        case .kilograms: return value * 1000
+        case .pounds:    return value * 453.592
+        }
+    }
+
+    private func gramsToDisplay(_ grams: Double) -> Double {
+        switch appSettings.weightUnit {
+        case .grams:     return grams
+        case .ounces:    return grams / 28.3495
+        case .kilograms: return grams / 1000
+        case .pounds:    return grams / 453.592
+        }
+    }
+
+    private func formatGramsForInput(_ grams: Double) -> String {
+        let value = gramsToDisplay(grams)
+        switch appSettings.weightUnit {
+        case .grams:     return String(format: "%.0f", value)
+        case .ounces:    return String(format: "%.2f", value)
+        case .kilograms: return String(format: "%.3f", value)
+        case .pounds:    return String(format: "%.3f", value)
+        }
+    }
 
     var body: some View {
         NavigationStack {
@@ -74,7 +102,7 @@ struct AddGearItemView: View {
 
                 Section("Weight & Quantity") {
                     HStack {
-                        TextField("Weight", text: $weightGrams)
+                        TextField("Weight", text: $weightInput)
                             .keyboardType(.decimalPad)
                         Text(appSettings.unitLabel).foregroundStyle(.secondary)
                     }
@@ -103,8 +131,8 @@ struct AddGearItemView: View {
     private func fetchFromURL() async {
         guard let metadata = await viewModel.fetchMetadata(from: urlString) else { return }
         if name.isEmpty { name = metadata.name }
-        if let g = metadata.weightGrams, weightGrams.isEmpty {
-            weightGrams = String(format: "%.0f", g)
+        if let g = metadata.weightGrams, weightInput.isEmpty {
+            weightInput = formatGramsForInput(g)
         } else if metadata.weightGrams == nil {
             viewModel.urlFetchError = "Name imported — weight not found, enter manually."
         }
@@ -115,7 +143,7 @@ struct AddGearItemView: View {
         name = item.name
         brand = item.brand
         category = item.category
-        weightGrams = String(format: "%.0f", item.weightGrams)
+        weightInput = formatGramsForInput(item.weightGrams)
         quantityOwned = item.quantityOwned
         isConsumable = item.isConsumable
         notes = item.notes
@@ -124,7 +152,8 @@ struct AddGearItemView: View {
     }
 
     private func save() {
-        let grams = Double(weightGrams) ?? 0
+        let displayValue = Double(weightInput) ?? 0
+        let grams = displayToGrams(displayValue)
         if let item = existingItem {
             item.name = name
             item.brand = brand
