@@ -113,7 +113,7 @@ enum LighterpackService {
             GearItem(
                 name: row.name.isEmpty ? "Imported Item" : row.name,
                 brand: "",
-                category: GearCategory(rawValue: row.category) ?? .other,
+                category: matchCategory(row.category),
                 weightGrams: row.weightGrams,
                 quantityOwned: max(1, row.quantity),
                 isConsumable: row.consumable,
@@ -124,6 +124,19 @@ enum LighterpackService {
     }
 
     // MARK: - Helpers
+
+    /// Resolve a CSV category label to a GearCategory, tolerating case differences
+    /// and the cross-platform label difference where the Android app names the
+    /// sleep category "Sleep System" rather than "Sleep".
+    private static func matchCategory(_ raw: String) -> GearCategory {
+        let s = raw.trimmingCharacters(in: .whitespaces)
+        if let exact = GearCategory(rawValue: s) { return exact }
+        if let ci = GearCategory.allCases.first(where: {
+            $0.rawValue.caseInsensitiveCompare(s) == .orderedSame
+        }) { return ci }
+        if s.caseInsensitiveCompare("Sleep System") == .orderedSame { return .sleep }
+        return .other
+    }
 
     private static func csv(_ s: String) -> String {
         let escaped = s.replacingOccurrences(of: "\"", with: "\"\"")

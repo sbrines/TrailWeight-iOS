@@ -13,9 +13,9 @@ struct WeightParser {
         return nil
     }
 
-    // "4 oz / 113g", "4 oz (113 g)", "19.0 oz (539 g)"
+    // "4 oz / 113g", "4 oz (113 g)", "19.0 oz (539 g)", "5 ounces (140 g)"
     private static func parseDualFormat(_ s: String) -> Double? {
-        let hasOz = s.range(of: #"\d.*oz"#, options: [.regularExpression, .caseInsensitive]) != nil
+        let hasOz = s.range(of: #"oz|ounce"#, options: [.regularExpression, .caseInsensitive]) != nil
         let gPattern = #"(\d+(?:\.\d+)?)\s*g(?:ram[s]?)?\b"#
         guard hasOz,
               let regex = try? NSRegularExpression(pattern: gPattern, options: .caseInsensitive),
@@ -27,7 +27,7 @@ struct WeightParser {
 
     // "119g", "119 g", "539 grams"
     private static func parseGramsOnly(_ s: String) -> Double? {
-        guard s.range(of: "oz", options: .caseInsensitive) == nil else { return nil }
+        guard s.range(of: #"oz|ounce"#, options: [.regularExpression, .caseInsensitive]) == nil else { return nil }
         let pattern = #"^(\d+(?:\.\d+)?)\s*g(?:ram[s]?)?\b"#
         guard let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive),
               let match = regex.firstMatch(in: s, range: NSRange(s.startIndex..., in: s)),

@@ -29,6 +29,13 @@ final class WeightParserTests: XCTestCase {
         XCTAssertEqual(WeightParser.parseToGrams("4 oz / 113g")!, 113, accuracy: 0.01)
         XCTAssertEqual(WeightParser.parseToGrams("19.0 oz (539 g)")!, 539, accuracy: 0.01)
         XCTAssertEqual(WeightParser.parseToGrams("4 oz (113 g)")!, 113, accuracy: 0.01)
+        // Spelled-out "ounces" should still prefer the grams component
+        XCTAssertEqual(WeightParser.parseToGrams("5 ounces (140 g)")!, 140, accuracy: 0.01)
+    }
+
+    func testKilograms() {
+        XCTAssertEqual(WeightParser.parseToGrams("1.31 kg")!, 1310, accuracy: 0.01)
+        XCTAssertEqual(WeightParser.parseToGrams("0.85 kg")!, 850, accuracy: 0.01)
     }
 
     func testNilForUnparseable() {
