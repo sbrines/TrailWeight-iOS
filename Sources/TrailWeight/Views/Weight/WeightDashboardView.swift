@@ -57,7 +57,6 @@ struct WeightDashboardView: View {
             Spacer()
         }
         .trailCard()
-        .onChange(of: viewModel.selectedTrip) { _, _ in viewModel.recalculate() }
     }
 
     private func weightSummaryCard(_ summary: WeightSummary) -> some View {
