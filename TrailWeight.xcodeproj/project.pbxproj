@@ -15,6 +15,7 @@
 		2C22281F2CA27DA6685FB584 /* GearListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0071884E8F70BB3AD1B4597 /* GearListView.swift */; };
 		3C104C38C73298EB3B334C7E /* AddTripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D36579402966D45DB642509F /* AddTripView.swift */; };
 		3C7CF2E2C858CF79CAF8ECEF /* GearRecommendationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCFC26722D80C41DDB44A40 /* GearRecommendationTests.swift */; };
+		4236E16F859505A124C1B894 /* TrailTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE49F5DB6D28042C02C834C9 /* TrailTheme.swift */; };
 		47272122496EE7741BF74CB2 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6DA8B3EB4612918EC35F57 /* SettingsView.swift */; };
 		47A43927447F5CD69030925B /* TrailWeightApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53FA29756120200FA802CDD /* TrailWeightApp.swift */; };
 		47F2ED4819AA5813BF2EC6A4 /* AppSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4E8664EA0F2A17FF53114C9 /* AppSettingsTests.swift */; };
@@ -89,6 +90,7 @@
 		9F93780213E67D105899C31A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A330F501339F1E7A9A665779 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A53FA29756120200FA802CDD /* TrailWeightApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrailWeightApp.swift; sourceTree = "<group>"; };
+		AE49F5DB6D28042C02C834C9 /* TrailTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrailTheme.swift; sourceTree = "<group>"; };
 		AE57A84ED5B6313641F7BB44 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		AE6DA8B3EB4612918EC35F57 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		B0071884E8F70BB3AD1B4597 /* GearListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GearListView.swift; sourceTree = "<group>"; };
@@ -142,6 +144,14 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
+		1E2890CB5ACC4DC9D7337412 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				AE49F5DB6D28042C02C834C9 /* TrailTheme.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
 		22CCF262870679AC4390A095 /* Services */ = {
 			isa = PBXGroup;
 			children = (
@@ -193,6 +203,7 @@
 				A53FA29756120200FA802CDD /* TrailWeightApp.swift */,
 				A29C9405A60F27D00DED5976 /* Models */,
 				22CCF262870679AC4390A095 /* Services */,
+				1E2890CB5ACC4DC9D7337412 /* Theme */,
 				483ABC056D55D59BD66F6FBB /* ViewModels */,
 				0900BBD46795A7C7CD517C75 /* Views */,
 			);
@@ -408,6 +419,7 @@
 				E8B259645707777F77DE6FBD /* ResupplyPoint.swift in Sources */,
 				F2C4B246A087519E4323C83D /* ResupplyPointDetailView.swift in Sources */,
 				47272122496EE7741BF74CB2 /* SettingsView.swift in Sources */,
+				4236E16F859505A124C1B894 /* TrailTheme.swift in Sources */,
 				47A43927447F5CD69030925B /* TrailWeightApp.swift in Sources */,
 				D0EB1ABE6FB3DBE3D487B594 /* Trip.swift in Sources */,
 				9FBB857949B895FF723A86F1 /* TripDetailView.swift in Sources */,

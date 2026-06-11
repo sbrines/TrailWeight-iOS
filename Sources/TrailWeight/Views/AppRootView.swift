@@ -4,10 +4,14 @@ struct AppRootView: View {
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
 
     var body: some View {
-        if hasSeenOnboarding {
-            ContentView()
-        } else {
-            OnboardingView(hasSeenOnboarding: $hasSeenOnboarding)
+        Group {
+            if hasSeenOnboarding {
+                ContentView()
+            } else {
+                OnboardingView(hasSeenOnboarding: $hasSeenOnboarding)
+            }
         }
+        .tint(.trailPrimary)
+        .fontDesign(.rounded)
     }
 }
