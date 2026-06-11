@@ -99,6 +99,7 @@ struct ResupplyPointAddItemView: View {
                 .buttonStyle(.plain)
             }
             .navigationTitle("Add Item")
+            .trailListBackground()
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

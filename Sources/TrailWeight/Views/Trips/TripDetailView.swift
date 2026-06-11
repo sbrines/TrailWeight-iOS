@@ -91,6 +91,7 @@ struct AddResupplyPointView: View {
                 }
             }
             .navigationTitle("Add Resupply Point")
+            .trailListBackground()
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

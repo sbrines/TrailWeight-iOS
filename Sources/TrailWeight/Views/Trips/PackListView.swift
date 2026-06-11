@@ -134,6 +134,7 @@ struct GearPickerView: View {
                 .buttonStyle(.plain)
             }
             .navigationTitle("Add Gear")
+            .trailListBackground()
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

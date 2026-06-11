@@ -79,7 +79,7 @@ struct ImportCSVView: View {
                 Spacer()
                 Image(systemName: "doc.badge.plus")
                     .font(.system(size: 64))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.trailPine)
 
                 VStack(spacing: 8) {
                     Text("Import from Lighterpack")
@@ -104,6 +104,8 @@ struct ImportCSVView: View {
                 Spacer()
             }
             .padding(32)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.trailBackground)
             .navigationTitle("Import Gear")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -174,7 +176,7 @@ struct ImportPreviewView: View {
                 HStack(spacing: 12) {
                     Image(systemName: selected.contains(index)
                           ? "checkmark.circle.fill" : "circle")
-                        .foregroundStyle(selected.contains(index) ? .blue : .secondary)
+                        .foregroundStyle(selected.contains(index) ? Color.trailPine : .secondary)
                         .font(.title3)
                         .onTapGesture {
                             if selected.contains(index) { selected.remove(index) }
@@ -204,6 +206,7 @@ struct ImportPreviewView: View {
                 }
             }
             .navigationTitle("Preview (\(rows.count) items)")
+            .trailListBackground()
             .navigationBarTitleDisplayMode(.inline)
             .safeAreaInset(edge: .bottom) {
                 VStack(spacing: 0) {
