@@ -79,6 +79,14 @@ extension View {
     func trailCard(padding: CGFloat = 16) -> some View {
         TrailCard(padding: padding) { self }
     }
+
+    /// Swaps a List/Form's default grouped background for the Trailhead bone
+    /// surface, so grouped sections read as cards floating on the app color.
+    func trailListBackground() -> some View {
+        self
+            .scrollContentBackground(.hidden)
+            .background(Color.trailBackground)
+    }
 }
 
 // MARK: - Color helpers

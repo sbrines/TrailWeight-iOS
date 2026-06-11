@@ -114,6 +114,7 @@ struct AddGearItemView: View {
                 }
             }
             .navigationTitle(isEditing ? "Edit Item" : "Add Gear")
+            .trailListBackground()
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

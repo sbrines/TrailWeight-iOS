@@ -47,6 +47,7 @@ struct RecommendationsView: View {
                 }
             }
             .navigationTitle("Gear Recommendations")
+            .trailListBackground()
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {

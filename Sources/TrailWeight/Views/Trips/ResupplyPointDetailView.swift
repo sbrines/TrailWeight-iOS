@@ -50,6 +50,7 @@ struct ResupplyPointDetailView: View {
             }
         }
         .navigationTitle(point.locationName)
+        .trailListBackground()
         .sheet(isPresented: $showingAddItem) {
             ResupplyPointAddItemView(point: point, allGear: allGear)
         }

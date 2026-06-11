@@ -23,12 +23,12 @@ struct WeightHistoryView: View {
                                 x: .value("Date", snap.recordedAt),
                                 y: .value("Base", appSettings.convert(snap.baseWeightGrams))
                             )
-                            .foregroundStyle(.blue)
+                            .foregroundStyle(Color.trailPine)
                             PointMark(
                                 x: .value("Date", snap.recordedAt),
                                 y: .value("Base", appSettings.convert(snap.baseWeightGrams))
                             )
-                            .foregroundStyle(.blue)
+                            .foregroundStyle(Color.trailPine)
                             .annotation(position: .top) {
                                 Text(snap.classification)
                                     .font(.system(size: 9))
@@ -82,6 +82,7 @@ struct WeightHistoryView: View {
             }
         }
         .navigationTitle("Weight History")
+        .trailListBackground()
     }
 
     private func classificationColor(_ c: String) -> Color {

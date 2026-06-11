@@ -63,6 +63,7 @@ struct TripDetailView: View {
             }
         }
         .navigationTitle(trip.name)
+        .trailListBackground()
         .sheet(isPresented: $showingRecommendations) {
             RecommendationsView(trip: trip)
         }

@@ -38,6 +38,7 @@ struct PackListView: View {
             }
         }
         .navigationTitle(packList.name)
+        .trailListBackground()
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button("Add Item", systemImage: "plus") { showingAddGear = true }

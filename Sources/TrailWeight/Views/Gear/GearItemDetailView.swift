@@ -32,6 +32,7 @@ struct GearItemDetailView: View {
             }
         }
         .navigationTitle(item.name)
+        .trailListBackground()
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
             NavigationLink("Edit", destination: AddGearItemView(existingItem: item))

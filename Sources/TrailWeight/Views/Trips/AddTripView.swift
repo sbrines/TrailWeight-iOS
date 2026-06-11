@@ -41,6 +41,7 @@ struct AddTripView: View {
                 }
             }
             .navigationTitle("New Trip")
+            .trailListBackground()
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

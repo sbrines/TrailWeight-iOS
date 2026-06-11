@@ -9,25 +9,25 @@ struct OnboardingView: View {
     private let infoPages: [OnboardingPage] = [
         OnboardingPage(
             icon: "backpack.fill",
-            iconColor: .indigo,
+            iconColor: .trailPine,
             title: "Your gear, organized",
             body: "Add everything you own to your gear inventory. Paste a product URL from REI, Zpacks, Gossamer Gear, and more — name and weight are fetched automatically."
         ),
         OnboardingPage(
             icon: "scalemass.fill",
-            iconColor: .green,
+            iconColor: .trailAmber,
             title: "Go ultralight",
             body: "Build pack lists for each trip. Track base weight, worn weight, and consumables in real time. TrailWeight tells you if you've hit ultralight or super-ultralight status."
         ),
         OnboardingPage(
             icon: "map.fill",
-            iconColor: .orange,
+            iconColor: .trailPine,
             title: "Plan smarter",
             body: "Get gear recommendations based on your route elevation, season, and terrain. Plan every resupply box for long trails with mile markers and shipping details."
         ),
         OnboardingPage(
             icon: "square.and.arrow.down",
-            iconColor: .blue,
+            iconColor: .trailAmber,
             title: "Import from Lighterpack",
             body: "Already on Lighterpack? Export your list as a CSV and import it here in seconds. Your data stays on your device — no account needed, no cloud required."
         ),
@@ -77,6 +77,7 @@ struct OnboardingView: View {
             .padding(.bottom, 48)
             .padding(.top, 16)
         }
+        .background(Color.trailBackground.ignoresSafeArea())
     }
 }
 
@@ -125,11 +126,11 @@ private struct UnitPickerPage: View {
             Spacer()
             ZStack {
                 Circle()
-                    .fill(Color.green.opacity(0.12))
+                    .fill(Color.trailPine.opacity(0.12))
                     .frame(width: 120, height: 120)
                 Image(systemName: "scalemass.fill")
                     .font(.system(size: 52))
-                    .foregroundStyle(.green)
+                    .foregroundStyle(Color.trailPine)
             }
             VStack(spacing: 12) {
                 Text("How do you measure weight?")
@@ -154,7 +155,7 @@ private struct UnitPickerPage: View {
                             Spacer()
                             if selectedUnit == unit {
                                 Image(systemName: "checkmark.circle.fill")
-                                    .foregroundStyle(.green)
+                                    .foregroundStyle(Color.trailPine)
                             } else {
                                 Image(systemName: "circle")
                                     .foregroundStyle(.secondary)
@@ -163,7 +164,12 @@ private struct UnitPickerPage: View {
                         .padding()
                         .background(
                             RoundedRectangle(cornerRadius: 12)
-                                .fill(selectedUnit == unit ? Color.green.opacity(0.1) : Color(.systemGray6))
+                                .fill(selectedUnit == unit ? Color.trailPine.opacity(0.12) : Color.trailCard)
+                                .shadow(color: .black.opacity(0.04), radius: 3, y: 1)
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .strokeBorder(selectedUnit == unit ? Color.trailPine.opacity(0.4) : Color.trailHairline, lineWidth: 1)
                         )
                     }
                     .buttonStyle(.plain)
