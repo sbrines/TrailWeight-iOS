@@ -7,6 +7,7 @@ struct PackListView: View {
     @Environment(\.modelContext) private var context
     @Query(sort: \GearItem.name) private var allGear: [GearItem]
     @State private var showingAddGear = false
+    @State private var showingShakedown = false
 
     private var grouped: [(category: GearCategory, items: [PackListItem])] {
         let dict = Dictionary(grouping: packList.items ?? []) { item in
@@ -43,9 +44,17 @@ struct PackListView: View {
             ToolbarItem(placement: .primaryAction) {
                 Button("Add Item", systemImage: "plus") { showingAddGear = true }
             }
+            ToolbarItem(placement: .secondaryAction) {
+                Button("Shakedown", systemImage: "sparkles.rectangle.stack") {
+                    showingShakedown = true
+                }
+            }
         }
         .sheet(isPresented: $showingAddGear) {
             GearPickerView(packList: packList, allGear: allGear)
+        }
+        .sheet(isPresented: $showingShakedown) {
+            ShakedownView(items: packList.items ?? [])
         }
     }
 }
