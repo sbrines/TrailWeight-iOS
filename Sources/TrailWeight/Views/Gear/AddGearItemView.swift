@@ -18,6 +18,7 @@ struct AddGearItemView: View {
     @State private var notes = ""
     @State private var urlString = ""
     @State private var imageURL = ""
+    @State private var suggestedCategory: GearCategory? = nil
 
     var isEditing: Bool { existingItem != nil }
 
@@ -91,10 +92,27 @@ struct AddGearItemView: View {
 
                 Section("Item Details") {
                     TextField("Name", text: $name)
+                        .onChange(of: name) { _, _ in updateSuggestion() }
                     TextField("Brand", text: $brand)
+                        .onChange(of: brand) { _, _ in updateSuggestion() }
                     Picker("Category", selection: $category) {
                         ForEach(GearCategory.allCases) { cat in
                             Label(cat.rawValue, systemImage: cat.symbolName).tag(cat)
+                        }
+                    }
+                    if let suggested = suggestedCategory, suggested != category {
+                        Button {
+                            category = suggested
+                            suggestedCategory = nil
+                        } label: {
+                            HStack(spacing: 8) {
+                                Image(systemName: "sparkles")
+                                Text("Suggested: \(suggested.rawValue)")
+                                Spacer()
+                                Text("Apply").fontWeight(.semibold)
+                            }
+                            .font(.subheadline)
+                            .foregroundStyle(Color.trailPine)
                         }
                     }
                     Toggle("Consumable (food / fuel)", isOn: $isConsumable)
@@ -137,6 +155,20 @@ struct AddGearItemView: View {
         } else if metadata.weightGrams == nil {
             viewModel.urlFetchError = "Name imported — weight not found, enter manually."
         }
+        updateSuggestion()
+    }
+
+    /// Offer an on-device category guess while the category is still unset.
+    /// Gated on system AI, so it matches the import assist's availability rules.
+    private func updateSuggestion() {
+        guard !isEditing,
+              category == .other,
+              !name.isEmpty,
+              GearCategoryClassifier.isSystemAIAvailable else {
+            suggestedCategory = nil
+            return
+        }
+        suggestedCategory = GearCategoryClassifier.shared.classify(name: name, description: brand)
     }
 
     private func loadExisting() {

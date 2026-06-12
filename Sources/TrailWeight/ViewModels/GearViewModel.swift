@@ -31,9 +31,16 @@ final class GearViewModel {
             result = result.filter { $0.category == cat }
         }
         if !searchText.isEmpty {
-            result = result.filter {
-                $0.name.localizedCaseInsensitiveContains(searchText) ||
-                $0.brand.localizedCaseInsensitiveContains(searchText)
+            // Semantic assist (system-AI gated): map the query to a concept
+            // category so "rain protection" surfaces a jacket even with no name
+            // match. Falls back to plain substring search when AI is unavailable.
+            let conceptCategory = GearCategoryClassifier.isSystemAIAvailable
+                ? GearCategoryClassifier.shared.classify(name: searchText)
+                : nil
+            result = result.filter { item in
+                item.name.localizedCaseInsensitiveContains(searchText) ||
+                item.brand.localizedCaseInsensitiveContains(searchText) ||
+                (conceptCategory != nil && item.category == conceptCategory)
             }
         }
         return sorted(result)

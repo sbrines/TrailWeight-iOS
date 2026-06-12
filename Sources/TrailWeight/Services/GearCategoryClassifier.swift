@@ -69,7 +69,9 @@ struct GearCategoryClassifier {
             for (category, terms) in Self.seeds {
                 for seed in terms {
                     let distance = embedding.distance(between: token, and: seed)
-                    if best == nil || distance < best!.distance {
+                    if let current = best {
+                        if distance < current.distance { best = (category, distance) }
+                    } else {
                         best = (category, distance)
                     }
                 }
