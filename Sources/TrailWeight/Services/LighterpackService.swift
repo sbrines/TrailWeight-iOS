@@ -108,12 +108,13 @@ enum LighterpackService {
         return rows
     }
 
-    static func rowsToGearItems(_ rows: [LighterpackRow]) -> [GearItem] {
+    static func rowsToGearItems(_ rows: [LighterpackRow],
+                                smartCategorization: Bool = GearCategoryClassifier.isSystemAIAvailable) -> [GearItem] {
         rows.map { row in
             GearItem(
                 name: row.name.isEmpty ? "Imported Item" : row.name,
                 brand: "",
-                category: matchCategory(row.category),
+                category: resolveCategory(row, smart: smartCategorization),
                 weightGrams: row.weightGrams,
                 quantityOwned: max(1, row.quantity),
                 isConsumable: row.consumable,
@@ -124,6 +125,22 @@ enum LighterpackService {
     }
 
     // MARK: - Helpers
+
+    /// Resolve a row's category: trust the CSV label when it maps to a known
+    /// category, otherwise infer one on-device from the item name. The classifier
+    /// only runs when the label is blank or unrecognized, so clean imports stay
+    /// fully deterministic.
+    private static func resolveCategory(_ row: LighterpackRow, smart: Bool) -> GearCategory {
+        let matched = matchCategory(row.category)
+        // AI assist disabled — original behavior: unmatched stays Other.
+        guard smart else { return matched }
+        guard matched == .other else { return matched }
+        // Respect an explicit "Other" label; only infer when nothing was given.
+        if row.category.trimmingCharacters(in: .whitespaces).caseInsensitiveCompare("Other") == .orderedSame {
+            return .other
+        }
+        return GearCategoryClassifier.shared.classify(name: row.name, description: row.description) ?? .other
+    }
 
     /// Resolve a CSV category label to a GearCategory, tolerating case differences
     /// and the cross-platform label difference where the Android app names the
