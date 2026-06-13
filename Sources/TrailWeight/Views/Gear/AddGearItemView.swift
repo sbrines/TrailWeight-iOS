@@ -19,6 +19,8 @@ struct AddGearItemView: View {
     @State private var urlString = ""
     @State private var imageURL = ""
     @State private var suggestedCategory: GearCategory? = nil
+    @State private var quickDescription = ""
+    @Environment(\.openURL) private var openURL
 
     var isEditing: Bool { existingItem != nil }
 
@@ -53,6 +55,37 @@ struct AddGearItemView: View {
     var body: some View {
         NavigationStack {
             Form {
+                Section {
+                    TextField("Describe it — e.g. \u{201C}12 oz Patagonia jacket\u{201D}",
+                              text: $quickDescription, axis: .vertical)
+                        .lineLimit(1...3)
+                    HStack {
+                        Button {
+                            applyDescription()
+                        } label: {
+                            Label("Fill in fields", systemImage: "sparkles")
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.small)
+                        .disabled(quickDescription.trimmingCharacters(in: .whitespaces).isEmpty)
+                        Spacer()
+                        Button {
+                            if let url = GearDescriptionParser.searchURL(for: quickDescription) {
+                                openURL(url)
+                            }
+                        } label: {
+                            Label("Search the web", systemImage: "magnifyingglass")
+                        }
+                        .buttonStyle(.bordered)
+                        .controlSize(.small)
+                        .disabled(quickDescription.trimmingCharacters(in: .whitespaces).isEmpty)
+                    }
+                } header: {
+                    Text("Quick Add")
+                } footer: {
+                    Text("Fills the fields below from your description. Use Search the web to look up a weight you don't know, then paste the product URL.")
+                }
+
                 Section("URLs") {
                     HStack {
                         TextField("Paste product URL", text: $urlString)
@@ -154,6 +187,21 @@ struct AddGearItemView: View {
             weightInput = formatGramsForInput(g)
         } else if metadata.weightGrams == nil {
             viewModel.urlFetchError = "Name imported — weight not found, enter manually."
+        }
+        updateSuggestion()
+    }
+
+    /// Parse the free-text description and fill empty fields. Weight and name are
+    /// extracted on-device; category is applied only when system AI is available.
+    private func applyDescription() {
+        let parsed = GearDescriptionParser.parse(quickDescription)
+        if name.isEmpty { name = parsed.name }
+        if weightInput.isEmpty, let grams = parsed.weightGrams {
+            weightInput = formatGramsForInput(grams)
+        }
+        if category == .other, GearCategoryClassifier.isSystemAIAvailable,
+           let parsedCategory = parsed.category {
+            category = parsedCategory
         }
         updateSuggestion()
     }
