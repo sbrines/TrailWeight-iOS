@@ -32,4 +32,16 @@ final class BarcodeLookupServiceTests: XCTestCase {
     func testNilOnGarbage() {
         XCTAssertNil(BarcodeLookupService.parse(data("not json")))
     }
+
+    func testParseSearchReturnsCandidatesSkippingNameless() {
+        let json = #"{"products":[{"product_name":"Stove A","quantity":"73 g"},{"product_name":"Stove B","quantity":"120 g"},{"product_name":"  "}]}"#
+        let results = BarcodeLookupService.parseSearch(data(json))
+        XCTAssertEqual(results.count, 2)
+        XCTAssertEqual(results.first?.name, "Stove A")
+        XCTAssertEqual(results.first?.weightGrams ?? 0, 73, accuracy: 0.1)
+    }
+
+    func testParseSearchEmptyOnGarbage() {
+        XCTAssertTrue(BarcodeLookupService.parseSearch(data("nope")).isEmpty)
+    }
 }

@@ -22,7 +22,10 @@ struct AddGearItemView: View {
     @State private var quickDescription = ""
     @State private var showingScanner = false
     @State private var lookingUpBarcode = false
-    @Environment(\.openURL) private var openURL
+    @State private var searching = false
+    @State private var searchResults: [BarcodeProduct] = []
+    @State private var showingSearchResults = false
+    @State private var searchEmpty = false
 
     var isEditing: Bool { existingItem != nil }
 
@@ -72,15 +75,17 @@ struct AddGearItemView: View {
                         .disabled(quickDescription.trimmingCharacters(in: .whitespaces).isEmpty)
                         Spacer()
                         Button {
-                            if let url = GearDescriptionParser.searchURL(for: quickDescription) {
-                                openURL(url)
-                            }
+                            runSearch()
                         } label: {
-                            Label("Search the web", systemImage: "magnifyingglass")
+                            if searching {
+                                ProgressView().controlSize(.small)
+                            } else {
+                                Label("Search", systemImage: "magnifyingglass")
+                            }
                         }
                         .buttonStyle(.bordered)
                         .controlSize(.small)
-                        .disabled(quickDescription.trimmingCharacters(in: .whitespaces).isEmpty)
+                        .disabled(quickDescription.trimmingCharacters(in: .whitespaces).isEmpty || searching)
                     }
                     #if os(iOS)
                     if #available(iOS 16.0, *), BarcodeScannerView.isSupported {
@@ -210,12 +215,46 @@ struct AddGearItemView: View {
                 }
             }
             #endif
+            .sheet(isPresented: $showingSearchResults) {
+                ProductSearchResultsView(results: searchResults) { product in
+                    applyProduct(product)
+                    showingSearchResults = false
+                }
+            }
+            .alert("No products found", isPresented: $searchEmpty) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text("Open Products Facts didn't have a match. Try a barcode, a product URL, or enter it manually.")
+            }
         }
     }
 
+    /// Search Open Products Facts by the typed description and show candidates.
+    private func runSearch() {
+        Task { @MainActor in
+            searching = true
+            defer { searching = false }
+            searchResults = await BarcodeLookupService.search(quickDescription)
+            if searchResults.isEmpty { searchEmpty = true } else { showingSearchResults = true }
+        }
+    }
+
+    /// Fill empty fields from a chosen product. Category is applied only when
+    /// system AI is available, matching the rest of the import assist.
+    private func applyProduct(_ product: BarcodeProduct) {
+        if name.isEmpty { name = product.name }
+        if weightInput.isEmpty, let grams = product.weightGrams {
+            weightInput = formatGramsForInput(grams)
+        }
+        if category == .other, GearCategoryClassifier.isSystemAIAvailable,
+           let productCategory = product.category {
+            category = productCategory
+        }
+        updateSuggestion()
+    }
+
     #if os(iOS)
-    /// Look up a scanned barcode against Open Products Facts and fill empty
-    /// fields. Category is applied only when system AI is available.
+    /// Look up a scanned barcode against Open Products Facts and fill empty fields.
     private func lookupBarcode(_ code: String) {
         Task { @MainActor in
             lookingUpBarcode = true
@@ -224,15 +263,7 @@ struct AddGearItemView: View {
                 viewModel.urlFetchError = "No product found for that barcode."
                 return
             }
-            if name.isEmpty { name = product.name }
-            if weightInput.isEmpty, let grams = product.weightGrams {
-                weightInput = formatGramsForInput(grams)
-            }
-            if category == .other, GearCategoryClassifier.isSystemAIAvailable,
-               let productCategory = product.category {
-                category = productCategory
-            }
-            updateSuggestion()
+            applyProduct(product)
         }
     }
     #endif

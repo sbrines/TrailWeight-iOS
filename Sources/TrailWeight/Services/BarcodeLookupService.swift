@@ -1,7 +1,8 @@
 import Foundation
 
-/// Product fields resolved from a scanned barcode.
-struct BarcodeProduct {
+/// Product fields resolved from a barcode scan or a name search.
+struct BarcodeProduct: Identifiable {
+    let id = UUID()
     let name: String
     let weightGrams: Double?
     let category: GearCategory?
@@ -47,6 +48,46 @@ enum BarcodeLookupService {
             return parse(data)
         } catch {
             return nil
+        }
+    }
+
+    /// Parse an Open Products Facts search payload (`products` array) into
+    /// candidates. Kept separate from the network call for unit testing.
+    static func parseSearch(_ data: Data) -> [BarcodeProduct] {
+        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let products = json["products"] as? [[String: Any]] else { return [] }
+        return products.compactMap { product -> BarcodeProduct? in
+            let name = (product["product_name"] as? String)?
+                .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            guard !name.isEmpty else { return nil }
+            let quantity = product["quantity"] as? String ?? ""
+            return BarcodeProduct(
+                name: name,
+                weightGrams: WeightParser.parseToGrams(quantity),
+                category: GearCategoryClassifier.shared.classify(name: name)
+            )
+        }
+    }
+
+    /// Search Open Products Facts by free text (keyless). Returns candidate
+    /// products to choose from; empty when nothing matches or on error.
+    static func search(_ query: String) async -> [BarcodeProduct] {
+        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty,
+              let encoded = trimmed.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let url = URL(string: "https://world.openproductsfacts.org/cgi/search.pl?"
+                + "search_terms=\(encoded)&search_simple=1&action=process&json=1"
+                + "&page_size=12&fields=product_name,quantity")
+        else { return [] }
+
+        var request = URLRequest(url: url)
+        request.setValue("TrailWeight/1.0 (iOS)", forHTTPHeaderField: "User-Agent")
+        request.timeoutInterval = 15
+        do {
+            let (data, _) = try await URLSession.shared.data(for: request)
+            return parseSearch(data)
+        } catch {
+            return []
         }
     }
 }

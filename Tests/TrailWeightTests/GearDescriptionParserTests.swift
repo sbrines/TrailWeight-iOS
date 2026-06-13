@@ -26,11 +26,6 @@ final class GearDescriptionParserTests: XCTestCase {
         XCTAssertEqual(parsed.name, "Big Agnes Copper Spur tent")
     }
 
-    func testSearchURL() {
-        XCTAssertNotNil(GearDescriptionParser.searchURL(for: "Zpacks Duplex"))
-        XCTAssertNil(GearDescriptionParser.searchURL(for: "   "))
-    }
-
     func testParsesKilograms() {
         let parsed = GearDescriptionParser.parse("Osprey Exos 1.1 kg backpack")
         XCTAssertEqual(parsed.weightGrams ?? 0, 1100, accuracy: 1)

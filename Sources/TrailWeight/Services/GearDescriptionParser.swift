@@ -41,14 +41,4 @@ enum GearDescriptionParser {
         name = name.replacingOccurrences(of: #"\s{2,}"#, with: " ", options: .regularExpression)
         return name.trimmingCharacters(in: CharacterSet(charactersIn: " ,;-–—()/"))
     }
-
-    /// A web-search URL for the description, used by the "Search the web" action
-    /// to bridge to the existing URL importer when a weight isn't in the text.
-    static func searchURL(for text: String) -> URL? {
-        let query = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !query.isEmpty,
-              let encoded = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
-        else { return nil }
-        return URL(string: "https://duckduckgo.com/?q=\(encoded)+weight+specs")
-    }
 }
