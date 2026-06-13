@@ -26,35 +26,14 @@ final class GearViewModel {
     private let fetcher = URLMetadataFetcher()
 
     func filtered(_ items: [GearItem]) -> [GearItem] {
-        var result = items
-        if let cat = selectedCategory {
-            result = result.filter { $0.category == cat }
-        }
-        if !searchText.isEmpty {
-            // Semantic assist (system-AI gated): map the query to a concept
-            // category so "rain protection" surfaces a jacket even with no name
-            // match. Falls back to plain substring search when AI is unavailable.
-            let conceptCategory = GearCategoryClassifier.isSystemAIAvailable
-                ? GearCategoryClassifier.shared.classify(name: searchText)
-                : nil
-            result = result.filter { item in
-                item.name.localizedCaseInsensitiveContains(searchText) ||
-                item.brand.localizedCaseInsensitiveContains(searchText) ||
-                (conceptCategory != nil && item.category == conceptCategory)
-            }
-        }
-        return sorted(result)
-    }
-
-    private func sorted(_ items: [GearItem]) -> [GearItem] {
-        switch sortOption {
-        case .nameAscending:  return items.sorted { $0.name < $1.name }
-        case .nameDescending: return items.sorted { $0.name > $1.name }
-        case .weightLight:    return items.sorted { $0.weightGrams < $1.weightGrams }
-        case .weightHeavy:    return items.sorted { $0.weightGrams > $1.weightGrams }
-        case .category:       return items.sorted { $0.categoryRawValue < $1.categoryRawValue }
-        case .recentlyAdded:  return items.sorted { $0.createdAt > $1.createdAt }
-        }
+        // Semantic assist (system-AI gated): map the query to a concept category
+        // so "rain protection" surfaces a jacket even with no name match. Falls
+        // back to plain substring search when AI is unavailable.
+        let conceptCategory = (!searchText.isEmpty && GearCategoryClassifier.isSystemAIAvailable)
+            ? GearCategoryClassifier.shared.classify(name: searchText)
+            : nil
+        return GearFilter.apply(items, searchText: searchText, selectedCategory: selectedCategory,
+                                sortOption: sortOption, conceptCategory: conceptCategory)
     }
 
     func delete(_ items: [GearItem], from context: ModelContext) {
