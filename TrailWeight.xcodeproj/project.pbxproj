@@ -25,6 +25,7 @@
 		53242E1E920E4DE954B86DF0 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 050705B0E6A1EE3B1618B566 /* SwiftSoup */; };
 		5F96B92D85DD437F1261BF38 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95CB1E6297F6C9189844D937 /* ContentView.swift */; };
 		61E7B51A192C14269581A00D /* GearViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B72F30D8A3177ED02B07D99 /* GearViewModel.swift */; };
+		64B22A81A39D211B003CAACA /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E34BDE9026F0B42C7D1CA06C /* BarcodeScannerView.swift */; };
 		668BD0CE8705AB3D8CB873FD /* AddGearItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55336CF1713DE9BF4F3DEC57 /* AddGearItemView.swift */; };
 		6A72CD42A6B45CDA5FE96BD7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A330F501339F1E7A9A665779 /* Assets.xcassets */; };
 		70398C7F0BBCC109DAB9A950 /* WeightCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B605D4139D6EB5765A9A2F64 /* WeightCalculatorTests.swift */; };
@@ -35,8 +36,10 @@
 		7D3F11097242D01DBD94B310 /* ImportExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53864732563F6C453DB1F38 /* ImportExportView.swift */; };
 		9AA12971CC3B8C9275A875E4 /* PackListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B190CAF09C4E9270EF4D138 /* PackListItem.swift */; };
 		9FBB857949B895FF723A86F1 /* TripDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9AF4626325F6E7054077FF /* TripDetailView.swift */; };
+		A456A0B6A044866AD6A02AA4 /* BarcodeLookupServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141DD322F384B75A36781EA0 /* BarcodeLookupServiceTests.swift */; };
 		B7626E32623D0B2583BA35C9 /* GearCategoryClassifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4042B8B24654B2B466E7DD0 /* GearCategoryClassifier.swift */; };
 		BD125C748EB780E9954A1712 /* GearItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C344456473FCE7EFD4C763 /* GearItemDetailView.swift */; };
+		C14A6B0E910097D4CAE7DAC4 /* BarcodeLookupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938B0592EF4B7FAF571513E4 /* BarcodeLookupService.swift */; };
 		C194A3A754F682AD87A8C88C /* TripViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB2E5BFE0097A41A30F0671 /* TripViewModel.swift */; };
 		C7FD44A07D447B313C4BBCA5 /* GearDescriptionParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 072142A47C706531D384F47A /* GearDescriptionParser.swift */; };
 		CBB2B5EB027F0E5859F85626 /* ShakedownAdvisor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8408B595130F8D028850B20 /* ShakedownAdvisor.swift */; };
@@ -73,6 +76,7 @@
 		072142A47C706531D384F47A /* GearDescriptionParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GearDescriptionParser.swift; sourceTree = "<group>"; };
 		0B190CAF09C4E9270EF4D138 /* PackListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackListItem.swift; sourceTree = "<group>"; };
 		0B5C6FEDADB4D92894EABB5C /* WeightParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightParser.swift; sourceTree = "<group>"; };
+		141DD322F384B75A36781EA0 /* BarcodeLookupServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeLookupServiceTests.swift; sourceTree = "<group>"; };
 		2B72F30D8A3177ED02B07D99 /* GearViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GearViewModel.swift; sourceTree = "<group>"; };
 		2B9245966E4662B7B4D5FCFB /* WeightParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightParserTests.swift; sourceTree = "<group>"; };
 		35B7DE5D0DD2C178DCD2AF29 /* URLMetadataFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLMetadataFetcher.swift; sourceTree = "<group>"; };
@@ -93,6 +97,7 @@
 		7D9283F8F11DFC2C3693924D /* TrailWeight.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = TrailWeight.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E15F552A208122AD83473CE /* ResupplyPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResupplyPoint.swift; sourceTree = "<group>"; };
 		8E8920B3FB9C75B0CF8ED7D6 /* Trip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trip.swift; sourceTree = "<group>"; };
+		938B0592EF4B7FAF571513E4 /* BarcodeLookupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeLookupService.swift; sourceTree = "<group>"; };
 		95CB1E6297F6C9189844D937 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		9B80C1430AE87B08B9054571 /* GearRecommendationEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GearRecommendationEngine.swift; sourceTree = "<group>"; };
 		9C424EF772F029D15CBEA7EE /* GearItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GearItem.swift; sourceTree = "<group>"; };
@@ -115,6 +120,7 @@
 		D66AD0443902764FFAC16EF8 /* PackListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackListView.swift; sourceTree = "<group>"; };
 		D8408B595130F8D028850B20 /* ShakedownAdvisor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShakedownAdvisor.swift; sourceTree = "<group>"; };
 		DD9461CB6C63036B70765AEC /* TrailWeightTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TrailWeightTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E34BDE9026F0B42C7D1CA06C /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
 		E93D1BA00A79886506CC92D1 /* GearDescriptionParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GearDescriptionParserTests.swift; sourceTree = "<group>"; };
 		EE9AF4626325F6E7054077FF /* TripDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripDetailView.swift; sourceTree = "<group>"; };
 		F0C923A1433EC3C5BA95C6B2 /* TrailWeight.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TrailWeight.entitlements; sourceTree = "<group>"; };
@@ -169,6 +175,7 @@
 		22CCF262870679AC4390A095 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				938B0592EF4B7FAF571513E4 /* BarcodeLookupService.swift */,
 				C4042B8B24654B2B466E7DD0 /* GearCategoryClassifier.swift */,
 				072142A47C706531D384F47A /* GearDescriptionParser.swift */,
 				9B80C1430AE87B08B9054571 /* GearRecommendationEngine.swift */,
@@ -185,6 +192,7 @@
 			isa = PBXGroup;
 			children = (
 				55336CF1713DE9BF4F3DEC57 /* AddGearItemView.swift */,
+				E34BDE9026F0B42C7D1CA06C /* BarcodeScannerView.swift */,
 				01C344456473FCE7EFD4C763 /* GearItemDetailView.swift */,
 				B0071884E8F70BB3AD1B4597 /* GearListView.swift */,
 				C53864732563F6C453DB1F38 /* ImportExportView.swift */,
@@ -278,6 +286,7 @@
 			isa = PBXGroup;
 			children = (
 				F4E8664EA0F2A17FF53114C9 /* AppSettingsTests.swift */,
+				141DD322F384B75A36781EA0 /* BarcodeLookupServiceTests.swift */,
 				C4600BE31EA1F962A38C6AE4 /* GearCategoryClassifierTests.swift */,
 				E93D1BA00A79886506CC92D1 /* GearDescriptionParserTests.swift */,
 				5FCFC26722D80C41DDB44A40 /* GearRecommendationTests.swift */,
@@ -407,6 +416,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				47F2ED4819AA5813BF2EC6A4 /* AppSettingsTests.swift in Sources */,
+				A456A0B6A044866AD6A02AA4 /* BarcodeLookupServiceTests.swift in Sources */,
 				F31D08F5C3FC43DE6CA5F4D6 /* GearCategoryClassifierTests.swift in Sources */,
 				30089407760269CCD47B1A1D /* GearDescriptionParserTests.swift in Sources */,
 				3C7CF2E2C858CF79CAF8ECEF /* GearRecommendationTests.swift in Sources */,
@@ -425,6 +435,8 @@
 				3C104C38C73298EB3B334C7E /* AddTripView.swift in Sources */,
 				0160D13B78A6F8A3D3DE2871 /* AppRootView.swift in Sources */,
 				0037081D2F321D88857456CD /* AppSettings.swift in Sources */,
+				C14A6B0E910097D4CAE7DAC4 /* BarcodeLookupService.swift in Sources */,
+				64B22A81A39D211B003CAACA /* BarcodeScannerView.swift in Sources */,
 				5F96B92D85DD437F1261BF38 /* ContentView.swift in Sources */,
 				FF289D045C68661A31E5267E /* GearCategory.swift in Sources */,
 				B7626E32623D0B2583BA35C9 /* GearCategoryClassifier.swift in Sources */,

@@ -20,6 +20,8 @@ struct AddGearItemView: View {
     @State private var imageURL = ""
     @State private var suggestedCategory: GearCategory? = nil
     @State private var quickDescription = ""
+    @State private var showingScanner = false
+    @State private var lookingUpBarcode = false
     @Environment(\.openURL) private var openURL
 
     var isEditing: Bool { existingItem != nil }
@@ -80,6 +82,17 @@ struct AddGearItemView: View {
                         .controlSize(.small)
                         .disabled(quickDescription.trimmingCharacters(in: .whitespaces).isEmpty)
                     }
+                    #if os(iOS)
+                    if #available(iOS 16.0, *), BarcodeScannerView.isSupported {
+                        Button {
+                            showingScanner = true
+                        } label: {
+                            Label(lookingUpBarcode ? "Looking up…" : "Scan barcode",
+                                  systemImage: "barcode.viewfinder")
+                        }
+                        .disabled(lookingUpBarcode)
+                    }
+                    #endif
                 } header: {
                     Text("Quick Add")
                 } footer: {
@@ -177,8 +190,52 @@ struct AddGearItemView: View {
                 }
             }
             .onAppear { loadExisting() }
+            #if os(iOS)
+            .sheet(isPresented: $showingScanner) {
+                if #available(iOS 16.0, *) {
+                    NavigationStack {
+                        BarcodeScannerView { code in
+                            showingScanner = false
+                            lookupBarcode(code)
+                        }
+                        .ignoresSafeArea()
+                        .navigationTitle("Scan Barcode")
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar {
+                            ToolbarItem(placement: .cancellationAction) {
+                                Button("Cancel") { showingScanner = false }
+                            }
+                        }
+                    }
+                }
+            }
+            #endif
         }
     }
+
+    #if os(iOS)
+    /// Look up a scanned barcode against Open Products Facts and fill empty
+    /// fields. Category is applied only when system AI is available.
+    private func lookupBarcode(_ code: String) {
+        Task { @MainActor in
+            lookingUpBarcode = true
+            defer { lookingUpBarcode = false }
+            guard let product = await BarcodeLookupService.lookup(barcode: code) else {
+                viewModel.urlFetchError = "No product found for that barcode."
+                return
+            }
+            if name.isEmpty { name = product.name }
+            if weightInput.isEmpty, let grams = product.weightGrams {
+                weightInput = formatGramsForInput(grams)
+            }
+            if category == .other, GearCategoryClassifier.isSystemAIAvailable,
+               let productCategory = product.category {
+                category = productCategory
+            }
+            updateSuggestion()
+        }
+    }
+    #endif
 
     private func fetchFromURL() async {
         guard let metadata = await viewModel.fetchMetadata(from: urlString) else { return }
