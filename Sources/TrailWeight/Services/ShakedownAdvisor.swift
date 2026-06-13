@@ -50,6 +50,10 @@ enum ShakedownAdvisor {
                     + "Lightening this gives the biggest single payoff."))
         }
 
+        // Whether any real red flag (not just the informational heaviest item)
+        // was raised, so we can reassure the user when the kit is clean.
+        var flagged = false
+
         // Category concentration — flag a non-Big-3 category eating into base.
         let byCategory = Dictionary(grouping: baseItems, by: { $0.category })
             .map { (category: $0.key, grams: $0.value.reduce(0) { $0 + $1.grams }) }
@@ -57,6 +61,7 @@ enum ShakedownAdvisor {
         if let top = byCategory.first, summary.baseWeightGrams > 0 {
             let pct = Int((top.grams / summary.baseWeightGrams * 100).rounded())
             if pct >= 25 {
+                flagged = true
                 findings.append(ShakedownFinding(kind: .suggestion, symbol: "chart.pie",
                     text: "\(top.category.rawValue) is \(pct)% of your base weight (\(fmt(top.grams))). "
                         + "That's a lot in one category — worth a closer look."))
@@ -68,13 +73,14 @@ enum ShakedownAdvisor {
         for category in singleItemCategories {
             let inCategory = baseItems.filter { $0.category == category }
             if inCategory.count > 1 {
+                flagged = true
                 findings.append(ShakedownFinding(kind: .warning, symbol: "doc.on.doc",
                     text: "You're carrying \(inCategory.count) \(category.rawValue.lowercased()) items. "
                         + "Most trips only need one — consider dropping a backup."))
             }
         }
 
-        if findings.count == 2 {
+        if !flagged {
             findings.append(ShakedownFinding(kind: .info, symbol: "checkmark.seal",
                 text: "Nothing jumps out — this looks like a dialed kit."))
         }

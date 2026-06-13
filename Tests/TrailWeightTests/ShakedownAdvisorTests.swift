@@ -42,6 +42,30 @@ final class ShakedownAdvisorTests: XCTestCase {
         XCTAssertTrue(findings.contains { $0.kind == .warning && $0.text.lowercased().contains("shelter") })
     }
 
+    func testWellDistributedKitReportsDialed() {
+        // Five equal categories: top is 20% of base (< 25%) and no redundancy,
+        // so the advisor should reassure rather than flag.
+        let items = [
+            pack(gear("Tent", .shelter, 200)),
+            pack(gear("Quilt", .sleep, 200)),
+            pack(gear("Jacket", .clothing, 200)),
+            pack(gear("Stove", .cooking, 200)),
+            pack(gear("Headlamp", .electronics, 200)),
+        ]
+        let findings = ShakedownAdvisor.analyze(items: items, settings: AppSettings())
+        XCTAssertTrue(findings.contains { $0.text.lowercased().contains("dialed") })
+        XCTAssertFalse(findings.contains { $0.kind == .warning })
+    }
+
+    func testConcentratedKitDoesNotReportDialed() {
+        let items = [
+            pack(gear("Heavy Tent", .shelter, 2000)),
+            pack(gear("Light Quilt", .sleep, 200)),
+        ]
+        let findings = ShakedownAdvisor.analyze(items: items, settings: AppSettings())
+        XCTAssertFalse(findings.contains { $0.text.lowercased().contains("dialed") })
+    }
+
     func testWornAndConsumableExcludedFromHeaviestBase() {
         // The food item is heaviest overall but is a consumable, so the heaviest
         // *base* call-out should be the tent, not the food.
